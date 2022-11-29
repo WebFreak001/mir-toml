@@ -1,0 +1,15 @@
+name "mir-toml"
+description "a mir-ion (de)serialization frontend for TOML files"
+authors "webfreak"
+license "MIT"
+
+dependency "mir-ion" version="~>2.0"
+dependency "toml" version="~>1.0"
+
+configuration "library" {
+	targetType "autodetect"
+}
+
+configuration "unittest" {
+	versions "mir_toml_test"
+}
