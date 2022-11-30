@@ -1,6 +1,6 @@
 module mir.toml.serializer;
 
-debug = Pops;
+// debug = Pops;
 
 import mir.bignum.decimal : Decimal;
 import mir.bignum.integer : BigInt;
