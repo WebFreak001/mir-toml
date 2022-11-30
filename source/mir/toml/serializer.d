@@ -114,9 +114,9 @@ private struct ParseInfo
 		uint, "", 3
 	));
 
-@safe pure scope:
+@safe pure:
 
-	string toString() const
+	string toString() const scope
 	{
 		import std.conv : text;
 	
@@ -183,7 +183,7 @@ private struct ParseInfoStack
 		return buffer[0 .. len];
 	}
 
-	private void ensureBuffer() scope
+	private void ensureBuffer() scope @trusted
 	{
 		if (buffer is null)
 			buffer = stack[1 .. $];
