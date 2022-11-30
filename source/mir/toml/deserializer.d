@@ -207,7 +207,7 @@ immutable(ubyte)[] tomlToIon(scope const(char)[] inputData)
 		auto debugSerializer = makeDebugSerializer(ionSerializer!(nMax * 8, null, false));
 		debugSerializer.forwarder.initialize(table);
 		parseToml!(typeof(debugSerializer))(inputData, debugSerializer);
-		ref auto serializer() => debugSerializer.forwarder;
+		ref auto serializer() { return debugSerializer.forwarder; }
 	}
 	else
 	{
