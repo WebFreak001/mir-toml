@@ -1,16 +1,19 @@
 module mir.toml.examples;
 
+import core.time;
 import mir.toml;
+import std.conv;
 
 @safe
 version(mir_toml_test) unittest
 {
-	import core.time;
 	import std.datetime.date;
 	import std.datetime.systime;
 	import std.datetime.timezone;
 	import mir.algebraic;
 	import mir.serde;
+
+	alias StringOrDouble = Algebraic!(string, double);
 
 	struct TempTargets
 	{
@@ -30,7 +33,7 @@ version(mir_toml_test) unittest
 	{
 		bool enabled;
 		ushort[] ports;
-		Algebraic!(string[], double[])[] data;
+		StringOrDouble[][] data;
 		@tomlInlineTable
 		@serdeKeys("temp_targets")
 		TempTargets tempTargets;
@@ -72,15 +75,16 @@ version(mir_toml_test) unittest
 		)
 	};
 	document.database.data.length = 2;
-	document.database.data[0] = ["delta", "phi"];
-	document.database.data[1] = [3.14];
+	document.database.data[0] = [StringOrDouble("delta"), StringOrDouble("phi")];
+	document.database.data[1] = [StringOrDouble(3.14)];
 	document.database.tempTargets = TempTargets(79.5, 72.0);
 
-	assert(serializeToml(document) == `title = "TOML Example"
+	string serialized = serializeToml(document);
+	assert(serialized == `title = "TOML Example"
 
 [owner]
 name = "Tom Preston-Werner"
-dob = 1979-05-27T15:32:00-08:00
+dob = 1979-05-27T07:32:00-08:00
 
 [database]
 enabled = true
@@ -97,6 +101,9 @@ role = "frontend"
 ip = "10.0.0.2"
 role = "backend"
 `);
+
+	auto deserialized = deserializeToml!DocumentSample(serialized);
+	assert(document == deserialized, text(document, " != ", deserialized));
 }
 
 unittest

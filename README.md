@@ -2,8 +2,6 @@
 
 As a believer of mir-ion as great general serialization framework for D, I have implemented TOML support for mir-ion.
 
-Currently only serialization is supported.
-
 ## Example
 
 ```d
@@ -13,6 +11,7 @@ import mir.algebraic;
 
 import std.datetime.date;
 import std.stdio;
+import std.file : readText;
 
 alias StringOrDouble = Algebraic!(string, double);
 
@@ -74,6 +73,9 @@ void main()
       ports = [ 8000, 8001, 8002 ]
       data = [ [ 1.4, "cool" ], [], [ "ok" ] ]
     */
+
+    // parsing TOML:
+    writeln(deserializeToml!MyDocument(readText("config.toml")));
 }
 ```
 
@@ -88,3 +90,11 @@ Serializer:
 - mixing structs (tables) and other values in arrays will throw an exception at runtime if tables don't come first
     - to fix this, annotate with `@tomlInlineArray` or change type to `TomlInlineArray!(T[])`
 - string types can be enforced using `@tomlLiteralString` (`'string'`), `@tomlMultilineString` (`"""string"""`) or `@tomlMultilineLiteralString` (`'''string'''`) - however note that runtime exceptions may occur if they are not representable
+- putting regular fields of a struct after table fields (struct members) will break at runtime
+    - planned to be fixed, to support conversion between formats, but for now not supported
+    - for serialization of D datatypes you can simply move your fields around to have the proper output, but you can't enforce this e.g. for parsed JSON
+
+Deserializer:
+- based on the `toml` library, which doesn't keep ordering of maps
+- only deserializes values, does not keep track of aesthetic things like which tables were inlined, how numbers and strings are serialized
+    - might want to somehow support this with annotations in the future
