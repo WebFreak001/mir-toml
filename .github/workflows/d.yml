@@ -22,7 +22,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         dc:
         - dmd-latest
-        - dmd-2.100.1 # must be supported for GDC support
+        - dmd-2.100.0 # must be supported for GDC support
         - ldc-latest
     runs-on: ${{ matrix.os }}
     steps:
