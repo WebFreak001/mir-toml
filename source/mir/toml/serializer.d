@@ -876,6 +876,13 @@ string serializeToml(V)(scope auto ref const V value, TOMLBeautyConfig config = 
 
 private static void putTimestamp(Appender)(ref Appender w, Timestamp t)
 {
+	if (t.offset)
+	{
+		assert(-24 * 60 <= t.offset && t.offset <= 24 * 60, "Offset absolute value should be less or equal to 24 * 60");
+		assert(t.precision >= Timestamp.Precision.minute, "Offsets are not allowed on date values.");
+		t.addMinutes(t.offset);
+	}
+
 	if (t.precision < Timestamp.Precision.day)
 		throw new IonException("Timestamps with only year or month precision are not supported in TOML serialization");
 
