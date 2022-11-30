@@ -172,27 +172,34 @@ private struct ParseInfoStack
 	debug (Pops)
 		string[] popHistory;
 
-@safe pure scope:
+@safe pure:
 
 	@disable this(this);
 
 	alias list this;
 
-	inout(ParseInfo[]) list() inout scope return
+	inout(ParseInfo[]) list() inout return scope
 	{
 		return buffer[0 .. len];
 	}
 
-	ref ParseInfo current() scope return
+	private void ensureBuffer() scope
 	{
 		if (buffer is null)
 			buffer = stack[1 .. $];
+	}
+
+	ref ParseInfo current() scope return
+	{
+		ensureBuffer();
 
 		if (len > 0 && len <= buffer.length)
 			return buffer[len - 1];
 		else
 			return stack[0];
 	}
+
+scope:
 
 	debug (Pops)
 	{
@@ -201,8 +208,7 @@ private struct ParseInfoStack
 			import std.range : repeat;
 
 			popHistory ~= text("  ".repeat(len).join, "- push ", file, ":", line, " ", i);
-			if (buffer is null)
-				buffer = stack[1 .. $];
+			ensureBuffer();
 
 			if (len >= buffer.length)
 				buffer.length *= 2;
@@ -222,8 +228,7 @@ private struct ParseInfoStack
 	{
 		void push(ParseInfo i)
 		{
-			if (buffer is null)
-				buffer = stack[1 .. $];
+			ensureBuffer();
 
 			if (len >= buffer.length)
 				buffer.length *= 2;

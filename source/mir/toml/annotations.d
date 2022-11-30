@@ -27,7 +27,7 @@ struct TomlInlineTable(T)
 		return null;
 	}
 
-	void serialize(S)(scope ref S serializer) const
+	void serialize(S)(scope ref S serializer) const scope
 	{
 		import mir.ser : serializeValue;
 		import mir.toml.serializer;
@@ -60,7 +60,7 @@ struct TomlInlineArray(T)
 		return null;
 	}
 
-	void serialize(S)(scope ref S serializer) const
+	void serialize(S)(scope ref S serializer) const scope
 	{
 		import mir.ser : serializeValue;
 		import mir.toml.serializer;
@@ -93,7 +93,7 @@ struct TomlString(bool multiline, bool literal)
 		return null;
 	}
 
-	void serialize(S)(scope ref S serializer) const
+	void serialize(S)(scope ref S serializer) const scope
 	{
 		import mir.ser : serializeValue;
 		import mir.toml.serializer;
